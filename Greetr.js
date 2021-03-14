@@ -3,7 +3,77 @@
         return new Greetr.init(firstName, lastName, language);
     };
 
-    Greetr.prototype = {};
+    var supportedLangs = ['en', 'es'];
+
+    var greetings = {
+        en: 'Hello',
+        es: 'Hola',
+    };
+
+    var formalGreetings = {
+        en: 'Greetings',
+        es: 'Saludos',
+    };
+
+    var logMessages = {
+        en: 'Logged in',
+        es: 'Inicio sesion',
+    };
+
+    Greetr.prototype = {
+        fullName: function() {
+            return this.firstName + ' ' + this.lastName;
+        },
+
+        validate: function() {
+            // this will point to the object calling this function
+            if (supportedLangs.indexOf(this.language) === -1) {
+                throw 'Invalid language';
+            };
+        },
+
+        greeting: function() {
+            return greetings[this.language] + ' ' + this.firstName + '!';
+        },
+
+        formalGreeting: function() {
+            return formalGreetings[this.language] + ', ' + this.fullName();
+        },
+
+        greet: function(isFormal) {
+            var message;
+
+            if (isFormal) {
+                message = this.formalGreeting();
+            } else {
+                message = this.greeting();
+            }
+
+            if (console)
+                console.log(message);
+
+            // 'this' refers to the calling object at execution time
+            // makes the method chainable
+            return this;
+        },
+
+        log: function() {
+            // IE support
+            if (console) {
+                console.log(logMessages[this.language] + ': ' + this.fullName());
+            }
+
+            return this;
+        },
+
+        // change language on the fly
+        setLang: function(newLang) {
+            this.language = newLang;
+            this.validate();
+
+            return this;
+        },
+    };
 
     Greetr.init = function(firstName, lastName, language) {
         var self = this;
